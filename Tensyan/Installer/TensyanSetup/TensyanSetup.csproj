@@ -1,0 +1,47 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net48</TargetFramework>
+    <UseWindowsForms>true</UseWindowsForms>
+    <LangVersion>latest</LangVersion>
+    <AssemblyName>TensyanSetup</AssemblyName>
+    <RootNamespace>Tensyan.Setup</RootNamespace>
+    <ApplicationIcon>..\..\Assets\Tensyan.ico</ApplicationIcon>
+    <Product>Tensyan 班级积分工具 安装程序</Product>
+    <AssemblyTitle>Tensyan 安装程序</AssemblyTitle>
+    <Company>Clarusvita Studio</Company>
+    <Copyright>© 2026 Clarusvita Studio · furliflix</Copyright>
+    <Version>1.1.0</Version>
+    <FileVersion>1.1.0.0</FileVersion>
+    <DebugType>none</DebugType>
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+    <NoWarn>NU1900;MSB3270</NoWarn>
+    <AutoGenerateBindingRedirects>false</AutoGenerateBindingRedirects>
+    <!-- -p:RequireAdmin=true 时内嵌“强制管理员”清单；否则为 per-user（asInvoker） -->
+    <ApplicationManifest Condition="'$(RequireAdmin)' == 'true'">app.admin.manifest</ApplicationManifest>
+    <ApplicationManifest Condition="'$(RequireAdmin)' != 'true'">app.manifest</ApplicationManifest>
+    <!-- -p:PayloadNetFx=true 表示负载是 .NET Framework 版：界面提示目标机需装 .NET，而不是“已内置运行库” -->
+    <DefineConstants Condition="'$(PayloadNetFx)' == 'true'">$(DefineConstants);NETFX_PAYLOAD</DefineConstants>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Reference Include="System.IO.Compression" />
+    <Reference Include="System.IO.Compression.FileSystem" />
+    <Reference Include="Microsoft.CSharp" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="..\Shared\InstallCore.cs" />
+    <Compile Include="..\Shared\SetupUi.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- 由 build-installer.ps1 传入：应用负载 zip 与卸载器 exe -->
+    <EmbeddedResource Include="$(PayloadZip)" LogicalName="payload.zip" Condition="'$(PayloadZip)' != '' and Exists('$(PayloadZip)')" />
+    <EmbeddedResource Include="$(UninstallerSource)" LogicalName="uninstaller.exe" Condition="'$(UninstallerSource)' != '' and Exists('$(UninstallerSource)')" />
+    <EmbeddedResource Include="..\..\Assets\Tensyan-logo.png" LogicalName="logo.png" />
+    <EmbeddedResource Include="..\..\Assets\Tensyan.ico" LogicalName="app.ico" />
+  </ItemGroup>
+
+</Project>

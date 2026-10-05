@@ -1,0 +1,61 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    Tensyan x86 —— 32 位版本（试验工程）
+    · 目标框架：.NET Framework 4.8（Win7 SP1 以上 / 32 位与 64 位 Windows 通吃，零前置运行库）
+    · 平台：x86（真正的 32 位进程）
+    · 源码：与 x64 版共享同一份 Core/UI/Program.cs，不复制代码
+      —— 只有在 .NET Framework 上不存在的 API 才用 #if NETFRAMEWORK 分支或 Compat 垫片
+  -->
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net48</TargetFramework>
+    <PlatformTarget>x86</PlatformTarget>
+    <Prefer32Bit>true</Prefer32Bit>
+    <UseWindowsForms>true</UseWindowsForms>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>disable</Nullable>
+    <LangVersion>latest</LangVersion>
+    <AssemblyName>TensyanX86</AssemblyName>
+    <RootNamespace>Tensyan</RootNamespace>
+    <ApplicationIcon>..\Tensyan\Assets\Tensyan.ico</ApplicationIcon>
+    <Product>Tensyan 班级积分工具（32 位版）</Product>
+    <Company>Clarusvita Studio</Company>
+    <Authors>furliflix</Authors>
+    <Copyright>© 2026 Clarusvita Studio · furliflix</Copyright>
+    <Version>1.1.0</Version>
+    <DebugType>none</DebugType>
+    <NoWarn>CA1416;CS0168;CS0219;CS8632;MSB3270;NU1900;CS0618</NoWarn>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <ApplicationManifest>app.x86.manifest</ApplicationManifest>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Using Remove="System.Threading" />
+    <!-- 本目录里的安装程序文件不属于主程序 -->
+    <Compile Remove="ProgramXP.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- .NET Framework 上需要显式引用的程序集（对应 net8 里内置的类型） -->
+    <Reference Include="System.IO.Compression" />
+    <Reference Include="System.IO.Compression.FileSystem" />
+  </ItemGroup>
+
+  <!-- 共享 x64 版的全部源码 -->
+  <ItemGroup>
+    <Compile Include="..\Tensyan\**\*.cs"
+             Exclude="..\Tensyan\obj\**\*.cs;..\Tensyan\bin\**\*.cs;..\Tensyan\Installer\**\*.cs" />
+    <Compile Remove="obj\**\*.cs" />
+    <EmbeddedResource Include="..\Tensyan\Assets\Tensyan-logo.png" LogicalName="Tensyan.Assets.Tensyan-logo.png" />
+  </ItemGroup>
+
+  <!-- .NET Framework 上缺失的 API 垫片（Compat 目录本身由 SDK 默认包含） -->
+
+
+  <ItemGroup>
+    <!-- 官方 Fluent 图标字体（MIT），用于界面图标 -->
+    <EmbeddedResource Include="..\Tensyan\Assets\FluentSystemIcons-Regular.ttf" />
+  </ItemGroup>
+</Project>

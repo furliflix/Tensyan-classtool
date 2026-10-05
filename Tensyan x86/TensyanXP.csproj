@@ -1,0 +1,67 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    Tensyan XP —— Windows XP SP3 特别版（net35 / x86）
+    · .NET Framework 3.5 是 XP 上最常见的运行时（很多老机器已装）；.NET 4.0 机器也能跑（config 里同时声明 v2.0/v4.0）
+    · 与 x64 / x86 版共享同一份源码，只有 XP/.NET 3.5 缺失的 API 才用 #if 或 Compat 垫片
+    · 参考程序集用真实的目标程序集（_refs\net35，由 Microsoft.NETFramework.ReferenceAssemblies.net35 解包），
+      保证编译器看到的就是 .NET 3.5 的 API 面 —— 不会"偷偷用 4.x API 却编过"
+  -->
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net35</TargetFramework>
+    <PlatformTarget>x86</PlatformTarget>
+    <Prefer32Bit>true</Prefer32Bit>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>disable</Nullable>
+    <LangVersion>latest</LangVersion>
+    <AssemblyName>TensyanXP</AssemblyName>
+    <RootNamespace>Tensyan</RootNamespace>
+    <ApplicationIcon>..\Tensyan\Assets\Tensyan.ico</ApplicationIcon>
+    <Product>Tensyan 班级积分工具（XP 特别版）</Product>
+    <Company>Clarusvita Studio</Company>
+    <Copyright>© 2026 Clarusvita Studio · furliflix</Copyright>
+    <Version>1.1.0</Version>
+    <DebugType>none</DebugType>
+    <NoWarn>CA1416;CS0168;CS0219;CS8632;MSB3270;NU1900;CS0618;CS1591;CS0169</NoWarn>
+    <AutoGenerateBindingRedirects>false</AutoGenerateBindingRedirects>
+
+    <!-- 真正的 .NET 3.5 目标程序集（离线解包自 NuGet 包） -->
+    <AutomaticallyUseReferenceAssemblyPackages>false</AutomaticallyUseReferenceAssemblyPackages>
+    <FrameworkPathOverride Condition="Exists('$(MSBuildThisFileDirectory)..\_refs\net35\build\.NETFramework\v3.5\mscorlib.dll')">$(MSBuildThisFileDirectory)..\_refs\net35\build\.NETFramework\v3.5</FrameworkPathOverride>
+    <TargetFrameworkRootPath Condition="Exists('$(MSBuildThisFileDirectory)..\_refs\net35\build\.NETFramework\')">$(MSBuildThisFileDirectory)..\_refs\net35\build\.NETFramework\</TargetFrameworkRootPath>
+
+    <!-- 标记：XP 版（供 #if XP_BUILD 使用） -->
+    <DefineConstants>$(DefineConstants);XP_BUILD</DefineConstants>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- XP 上不要用 net8 那套隐式 using（System.Net.Http / System.Threading.Tasks 都不存在） -->
+    <Using Remove="System.Net.Http" />
+    <Using Remove="System.Threading.Tasks" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="..\Tensyan\**\*.cs"
+             Exclude="..\Tensyan\obj\**\*.cs;..\Tensyan\bin\**\*.cs;..\Tensyan\Installer\**\*.cs" />
+    <Compile Remove="obj\**\*.cs" />
+    <!-- 本目录里属于“安装程序”的文件不要编进主程序 -->
+    <Compile Remove="ProgramXP.cs" />
+    <EmbeddedResource Include="..\Tensyan\Assets\Tensyan-logo.png" LogicalName="Tensyan.Assets.Tensyan-logo.png" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <!-- 官方 Fluent 图标字体（MIT），用于界面图标 -->
+    <EmbeddedResource Include="..\Tensyan\Assets\FluentSystemIcons-Regular.ttf" />
+  </ItemGroup>
+</Project>

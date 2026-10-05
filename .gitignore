@@ -1,0 +1,21 @@
+﻿# 构建产物
+bin/
+obj/
+dist/
+publish/
+_jbuild/
+*.user
+*.suo
+
+# 数据与私钥（绝不入库）
+data/
+keys/
+*.pfx
+*.p12
+*.snk
+*.keystore
+*.jks
+
+# 本机备份
+*.bak
+*.tmp

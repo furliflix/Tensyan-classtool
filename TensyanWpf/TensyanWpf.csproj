@@ -1,0 +1,55 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    Tensyan · WPF 版（新壳层）
+    为什么重做壳层：WinForms 没有 GPU 合成线程，动画必然撕裂（PCL2 之所以丝滑，是因为它是 WPF）。
+    WPF 一次性解决三件事：平滑动画 / 真 Mica 云母 / 任意 DPI（教室白板 300%）下的清晰渲染。
+
+    业务逻辑不重写：直接链接 PC 端 Tensyan\Core（与 WinForms 版、手机端共用同一份源码与数据格式）。
+  -->
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <UseWindowsForms>true</UseWindowsForms>
+    <!-- 内存优化：桌面 GC（非服务器 GC）+ 让 GC 主动把空闲内存还给系统 -->
+    <ServerGarbageCollection>false</ServerGarbageCollection>
+    <ConcurrentGarbageCollection>false</ConcurrentGarbageCollection>
+    <TieredCompilation>true</TieredCompilation>   <!-- 仅用于托盘 NotifyIcon -->
+    <Nullable>disable</Nullable>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <LangVersion>latest</LangVersion>
+    <RootNamespace>Tensyan.Wpf</RootNamespace>
+    <AssemblyName>Tensyan</AssemblyName>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <ApplicationIcon>..\Tensyan\Assets\Tensyan.ico</ApplicationIcon>
+    <StartupObject>Tensyan.Wpf.App</StartupObject>
+    <DebugType>none</DebugType>
+
+    <Company>Clarusvita Studio</Company>
+    <Product>Tensyan 班级积分工具（WPF 版）</Product>
+    <Copyright>© 2026 Clarusvita Studio · furliflix</Copyright>
+    <Version>1.1.0</Version>
+    <NoWarn>CA1416;CS0168;CS0219;CS8632;CS0618;CS1591;CS0169</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- 与 PC 端（WinForms）、手机端（Java）共用的业务核心 -->
+    <Compile Include="..\Tensyan\Core\*.cs" Link="Core\%(Filename)%(Extension)" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- 官方 Fluent 图标字体（MIT，来自 microsoft/fluentui-system-icons） -->
+    <Resource Include="Fonts\FluentSystemIcons-Regular.ttf" />
+    <!-- 品牌 logo -->
+    <Resource Include="..\Tensyan\Assets\Tensyan-logo.png" Link="Assets\Tensyan-logo.png" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <!-- 让 GC 主动把空闲内存还给系统 -->
+    <RuntimeHostConfigurationOption Include="System.GC.ConserveMemory" Value="7" />
+    <RuntimeHostConfigurationOption Include="System.GC.RetainVM" Value="false" />
+  </ItemGroup>
+</Project>

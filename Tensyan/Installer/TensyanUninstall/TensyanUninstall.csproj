@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net48</TargetFramework>
+    <UseWindowsForms>true</UseWindowsForms>
+    <LangVersion>latest</LangVersion>
+    <AssemblyName>TensyanUninstall</AssemblyName>
+    <RootNamespace>Tensyan.Setup</RootNamespace>
+    <ApplicationIcon>..\..\Assets\Tensyan.ico</ApplicationIcon>
+    <Product>Tensyan 班级积分工具 卸载程序</Product>
+    <Company>Clarusvita Studio</Company>
+    <Copyright>© 2026 Clarusvita Studio · furliflix</Copyright>
+    <Version>1.1.0</Version>
+    <DebugType>none</DebugType>
+    <NoWarn>NU1900;MSB3270</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Reference Include="System.IO.Compression" />
+    <Reference Include="System.IO.Compression.FileSystem" />
+    <Reference Include="Microsoft.CSharp" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="..\Shared\InstallCore.cs" />
+    <Compile Include="..\Shared\SetupUi.cs" />
+  </ItemGroup>
+
+</Project>

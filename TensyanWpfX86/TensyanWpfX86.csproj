@@ -1,0 +1,80 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    Tensyan x86 · WPF 壳层（.NET Framework 4.8 / 32 位）
+    · 与 64 位 WPF 版**共用同一份 XAML 与 C# 源码**（链接进来，不复制）
+    · 与所有版本共用 Tensyan\Core 业务逻辑
+    · WPF 在 net48 下正常工作 → 32 位 Win7 SP1+ 也能拥有和 64 位一样的观感（Mica 除外，见下）
+    · XP 版仍保留 WinForms（WPF 上不了 XP）
+
+    注意：Win7 没有 DWM 云母材质、也不支持 PerMonitorV2 —— MainWindow 里都有系统版本判断，
+    在 Win7 上会自动退化成"极轻渐变 + 系统 DPI 缩放"，不会出错。
+  -->
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net48</TargetFramework>
+    <PlatformTarget>x86</PlatformTarget>
+    <Prefer32Bit>true</Prefer32Bit>
+    <UseWPF>true</UseWPF>
+    <UseWindowsForms>true</UseWindowsForms>
+    <!-- 内存优化：桌面 GC（非服务器 GC）+ 让 GC 主动把空闲内存还给系统 -->
+    <ServerGarbageCollection>false</ServerGarbageCollection>
+    <ConcurrentGarbageCollection>false</ConcurrentGarbageCollection>
+    <TieredCompilation>true</TieredCompilation>   <!-- 仅用于托盘 NotifyIcon -->
+    <ImplicitUsings>disable</ImplicitUsings>
+    <Nullable>disable</Nullable>
+    <LangVersion>latest</LangVersion>
+    <AssemblyName>TensyanWpfX86</AssemblyName>
+    <RootNamespace>Tensyan.Wpf</RootNamespace>
+    <StartupObject>Tensyan.Wpf.App</StartupObject>
+    <ApplicationManifest>..\TensyanWpf\app.manifest</ApplicationManifest>
+    <ApplicationIcon>..\Tensyan\Assets\Tensyan.ico</ApplicationIcon>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <DebugType>none</DebugType>
+    <Company>Clarusvita Studio</Company>
+    <Product>Tensyan 班级积分工具（32 位 · WPF 版）</Product>
+    <Copyright>© 2026 Clarusvita Studio · furliflix</Copyright>
+    <Version>1.1.0</Version>
+    <NoWarn>CA1416;CS0168;CS0219;CS8632;MSB3270;NU1900;CS0618;CS1591;CS0169</NoWarn>
+    <!-- 自己显式列出 App.xaml，避免默认 glob 把链接进来的那份当成两份 -->
+    <EnableDefaultApplicationDefinition>false</EnableDefaultApplicationDefinition>
+    <EnableDefaultPageItems>false</EnableDefaultPageItems>
+    <!-- 源码全部显式列出（本目录还放着 Compat 垫片，避免与默认 glob 重复）-->
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+  </PropertyGroup>
+
+  <!-- WPF 界面源码：与 64 位 WPF 版同一份 -->
+  <ItemGroup>
+    <ApplicationDefinition Include="..\TensyanWpf\App.xaml" Link="App.xaml" />
+    <Page Include="..\TensyanWpf\MainWindow.xaml" Link="MainWindow.xaml" />
+    <Page Include="..\TensyanWpf\Views\StudentsView.xaml" Link="Views\StudentsView.xaml" />
+    <Page Include="..\TensyanWpf\Fluent.xaml" Link="Fluent.xaml" />
+    <Compile Include="..\TensyanWpf\App.xaml.cs" Link="App.xaml.cs" />
+    <Compile Include="..\TensyanWpf\MainWindow.xaml.cs" Link="MainWindow.xaml.cs" />
+    <Compile Include="..\TensyanWpf\TrayHost.cs" Link="TrayHost.cs" />
+    <Compile Include="..\TensyanWpf\Views\StudentsView.xaml.cs" Link="Views\StudentsView.xaml.cs" />
+    <Compile Include="..\TensyanWpf\Views\SimpleDialogs.cs" Link="Views\SimpleDialogs.cs" />
+    <Compile Include="..\TensyanWpf\Views\SystemViews.cs" Link="Views\SystemViews.cs" />
+    <Compile Include="..\TensyanWpf\Views\DataViews.cs" Link="Views\DataViews.cs" />
+    <Compile Include="..\TensyanWpf\Views\UiKit.cs" Link="Views\UiKit.cs" />
+  </ItemGroup>
+
+  <!-- 业务核心：与 PC 端、手机端共用 -->
+  <ItemGroup>
+    <Compile Include="..\Tensyan\Core\*.cs" Link="Core\%(Filename)%(Extension)" />
+    <!-- .NET Framework 上缺失的 JSON（System.Text.Json）垫片 -->
+    <Compile Include="Compat\JsonCompat.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="..\TensyanWpf\Fonts\FluentSystemIcons-Regular.ttf" Link="Fonts\FluentSystemIcons-Regular.ttf" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <!-- 让 GC 主动把空闲内存还给系统 -->
+    <RuntimeHostConfigurationOption Include="System.GC.ConserveMemory" Value="7" />
+    <RuntimeHostConfigurationOption Include="System.GC.RetainVM" Value="false" />
+  </ItemGroup>
+</Project>

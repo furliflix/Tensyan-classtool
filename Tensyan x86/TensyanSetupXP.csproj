@@ -1,0 +1,70 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    Tensyan XP 特别版 安装程序（net35 / x86）
+    · 目标机：Windows XP SP3（需 .NET Framework 3.5，老机器一般都有）
+    · 负载直接内嵌为资源（net35 没有 ZipArchive）：程序 exe + config + 三份文档 + 卸载器
+    · 与 x64/32 位版共用同一套安装界面（SetupForm）与核心逻辑（InstallCore）
+  -->
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net35</TargetFramework>
+    <PlatformTarget>x86</PlatformTarget>
+    <Prefer32Bit>true</Prefer32Bit>
+    <AssemblyName>TensyanSetupXP</AssemblyName>
+    <RootNamespace>Tensyan.Setup</RootNamespace>
+    <ApplicationIcon>..\Tensyan\Assets\Tensyan.ico</ApplicationIcon>
+    <Product>Tensyan 班级积分工具 安装程序（XP 特别版）</Product>
+    <Company>Clarusvita Studio</Company>
+    <Copyright>© 2026 Clarusvita Studio · furliflix</Copyright>
+    <Version>1.1.0</Version>
+    <DebugType>none</DebugType>
+    <NoWarn>CA1416;CS0168;CS0219;CS8632;MSB3270;NU1900;CS0618;CS1591;CS0169</NoWarn>
+    <AutoGenerateBindingRedirects>false</AutoGenerateBindingRedirects>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <LangVersion>latest</LangVersion>
+
+    <AutomaticallyUseReferenceAssemblyPackages>false</AutomaticallyUseReferenceAssemblyPackages>
+    <FrameworkPathOverride>$(MSBuildThisFileDirectory)..\_refs\net35\build\.NETFramework\v3.5</FrameworkPathOverride>
+
+    <!-- XP 版负载标记：安装界面改提示 .NET Framework 3.5 -->
+    <DefineConstants>$(DefineConstants);XP_PAYLOAD</DefineConstants>
+    <!-- 关掉默认通配，显式列出参与编译的文件（避免把卸载器的 Program.cs 也编进来） -->
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- 共享源码：安装核心 + 安装界面 + 界面控件（x64/32 位版同一份） -->
+    <Compile Include="..\Tensyan\Installer\Shared\InstallCore.cs" />
+    <Compile Include="..\Tensyan\Installer\Shared\SetupUi.cs" />
+    <Compile Include="..\Tensyan\Installer\TensyanSetup\SetupForm.cs" />
+    <Compile Include="ProgramXP.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="..\Tensyan\Assets\Tensyan-logo.png" LogicalName="logo.png" />
+    <EmbeddedResource Include="..\Tensyan\Assets\Tensyan.ico" LogicalName="app.ico" />
+  </ItemGroup>
+
+  <!-- 由 build-installer-xp.ps1 传入：负载目录与卸载器 -->
+  <ItemGroup Condition="'$(XpPayloadDir)' != ''">
+    <EmbeddedResource Include="$(XpPayloadDir)\Tensyan.exe" LogicalName="payload.app.exe" />
+    <EmbeddedResource Include="$(XpPayloadDir)\Tensyan.exe.config" LogicalName="payload.app.config" Condition="Exists('$(XpPayloadDir)\Tensyan.exe.config')" />
+    <EmbeddedResource Include="$(XpPayloadDir)\README.md" LogicalName="payload.readme" Condition="Exists('$(XpPayloadDir)\README.md')" />
+    <EmbeddedResource Include="$(XpPayloadDir)\使用说明.txt" LogicalName="payload.manual" Condition="Exists('$(XpPayloadDir)\使用说明.txt')" />
+    <EmbeddedResource Include="$(XpPayloadDir)\安装说明.txt" LogicalName="payload.install" Condition="Exists('$(XpPayloadDir)\安装说明.txt')" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(XpUninstaller)' != ''">
+    <EmbeddedResource Include="$(XpUninstaller)" LogicalName="uninstaller.exe" />
+  </ItemGroup>
+
+</Project>

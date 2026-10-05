@@ -1,0 +1,70 @@
+<UserControl x:Class="Tensyan.Wpf.Views.StudentsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             FontFamily="{StaticResource UiFont}">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="0">
+            <TextBlock x:Name="ClassName" FontSize="24" FontWeight="SemiBold" Foreground="{StaticResource TextMain}" />
+            <TextBlock x:Name="StatLine" FontSize="13" Foreground="{StaticResource TextSub}" Margin="0,4,0,12" />
+
+            <StackPanel Orientation="Horizontal">
+                <ComboBox x:Name="ClassBox" Width="190" FontSize="13.5" VerticalContentAlignment="Center" Height="34"
+                          SelectionChanged="ClassBox_SelectionChanged" />
+                <ComboBox x:Name="PointsBox" Width="110" FontSize="13.5" VerticalContentAlignment="Center" Height="34"
+                          Margin="8,0,0,0" />
+                <TextBox x:Name="NewNameBox" Width="150" Height="34" FontSize="13.5" Margin="8,0,0,0"
+                         VerticalContentAlignment="Center" Padding="8,0"
+                         ToolTip="输入学生姓名后点右侧按钮" />
+                <Button Content="添加学生" Style="{StaticResource PrimaryButton}" Margin="8,0,0,0" Click="AddStudent_Click" />
+                <Button Content="撤销" Style="{StaticResource SubtleButton}" Margin="8,0,0,0" Click="Undo_Click" />
+                <Button Content="导出 Excel" Style="{StaticResource SubtleButton}" Margin="8,0,0,0" Click="Export_Click" />
+            </StackPanel>
+
+            <TextBlock x:Name="Status" FontSize="12.5" Foreground="{StaticResource Accent}" Margin="0,10,0,0" />
+        </StackPanel>
+
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Margin="0,14,0,0">
+            <ItemsControl x:Name="CardList">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <!-- 右键菜单在 Card_ContextMenuOpening 里按身份动态生成（与 WinForms 版功能一致） -->
+                        <Border Style="{StaticResource CardBorder}" RenderTransformOrigin="0.5,0.5"
+                                ContextMenuOpening="Card_ContextMenuOpening">
+                            <Border.ContextMenu>
+                                <ContextMenu />
+                            </Border.ContextMenu>
+                            <Border.RenderTransform>
+                                <ScaleTransform x:Name="cardScale" ScaleX="1" ScaleY="1" />
+                            </Border.RenderTransform>
+                            <StackPanel Margin="14,10,12,12">
+                                <TextBlock Text="{Binding Name}" FontSize="16" FontWeight="SemiBold"
+                                           Foreground="{StaticResource TextMain}" TextTrimming="CharacterEllipsis" />
+                                <TextBlock Text="{Binding ScoreText}" FontSize="22" FontWeight="Bold"
+                                           Foreground="{Binding ScoreBrush}" Margin="0,2,0,0" />
+                                <TextBlock Text="{Binding Hint}" FontSize="12" Foreground="{StaticResource TextSub}" />
+                                <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
+                                    <Button Content="＋" Width="62" Height="34" Background="{StaticResource Green}"
+                                            Style="{StaticResource PrimaryButton}" Tag="{Binding}" Click="Plus_Click" />
+                                    <Button Content="－" Width="62" Height="34" Margin="8,0,0,0" Foreground="{StaticResource Red}"
+                                            Style="{StaticResource SubtleButton}" Tag="{Binding}" Click="Minus_Click" />
+                                    <TextBlock Text="右键更多" FontSize="11" Foreground="{StaticResource TextFaint}"
+                                               VerticalAlignment="Center" Margin="10,0,0,0" />
+                                </StackPanel>
+                            </StackPanel>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
+    </Grid>
+</UserControl>

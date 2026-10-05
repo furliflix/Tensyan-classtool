@@ -1,0 +1,50 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <UseWindowsForms>true</UseWindowsForms>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>disable</Nullable>
+    <LangVersion>latest</LangVersion>
+    <AssemblyName>Tensyan</AssemblyName>
+    <RootNamespace>Tensyan</RootNamespace>
+    <Version>1.1.0</Version>
+    <Product>Tensyan 班级积分工具</Product>
+    <Company>Clarusvita Studio</Company>
+    <Authors>furliflix</Authors>
+    <Description>Tensyan 班级积分工具 —— 访客只读 / 成员仅加分 / 管理员全部权限，三种登录模式与登录U盘</Description>
+    <Copyright>© 2026 Clarusvita Studio · furliflix</Copyright>
+    <SatelliteResourceLanguages>zh-Hans</SatelliteResourceLanguages>
+    <DebugType>none</DebugType>
+    <NoWarn>CA1416;CS0168;CS0219;CS8632</NoWarn>
+    <ApplicationIcon>Assets\Tensyan.ico</ApplicationIcon>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- 安装程序工程有自己的源码与中间目录，不要被主程序递归包含 -->
+    <Compile Remove="Installer\**" />
+    <EmbeddedResource Remove="Installer\**" />
+    <None Remove="Installer\**" />
+    <Compile Remove="dist\**" />
+    <Compile Remove="_build\**" />
+    <Compile Remove="_probe\**" />
+    <Compile Remove="_pubprobe\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- 避免 Timer 在 System.Threading 与 System.Windows.Forms 之间产生歧义 -->
+    <Using Remove="System.Threading" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- 品牌 logo（透明底）嵌入到程序里，运行时无需外部文件 -->
+    <EmbeddedResource Include="Assets\Tensyan-logo.png" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <!-- 官方 Fluent 图标字体（MIT），用于界面图标 -->
+    <EmbeddedResource Include="Assets\FluentSystemIcons-Regular.ttf" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,44 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    Tensyan XP 特别版 卸载程序（net35 / x86）
+    与其它版本共用同一份卸载逻辑（InstallCore）与界面控件（SetupUi），
+    只是目标框架换成 net35，能在 XP 上运行。
+  -->
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net35</TargetFramework>
+    <PlatformTarget>x86</PlatformTarget>
+    <Prefer32Bit>true</Prefer32Bit>
+    <AssemblyName>TensyanUninstallXP</AssemblyName>
+    <RootNamespace>Tensyan.Setup</RootNamespace>
+    <ApplicationIcon>..\Tensyan\Assets\Tensyan.ico</ApplicationIcon>
+    <Product>Tensyan 班级积分工具 卸载程序（XP 特别版）</Product>
+    <Company>Clarusvita Studio</Company>
+    <Copyright>© 2026 Clarusvita Studio · furliflix</Copyright>
+    <Version>1.1.0</Version>
+    <DebugType>none</DebugType>
+    <NoWarn>CA1416;CS0168;CS0219;CS8632;MSB3270;NU1900;CS0618;CS1591;CS0169</NoWarn>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <LangVersion>latest</LangVersion>
+    <AutomaticallyUseReferenceAssemblyPackages>false</AutomaticallyUseReferenceAssemblyPackages>
+    <FrameworkPathOverride>$(MSBuildThisFileDirectory)..\_refs\net35\build\.NETFramework\v3.5</FrameworkPathOverride>
+    <!-- 关掉默认通配：本目录还放着“安装程序”的源码，别混进来 -->
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="..\Tensyan\Installer\Shared\InstallCore.cs" />
+    <Compile Include="..\Tensyan\Installer\Shared\SetupUi.cs" />
+    <Compile Include="..\Tensyan\Installer\TensyanUninstall\Program.cs" />
+  </ItemGroup>
+
+</Project>
